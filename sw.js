@@ -1,0 +1,35 @@
+// Offline-Cache: Antwort sofort aus dem Cache, im Hintergrund aktualisieren.
+// Bei Änderungen an den Dateien VERSION hochzählen.
+const VERSION = "v1";
+const DATEIEN = [
+  "./", "index.html", "manifest.webmanifest", "css/app.css",
+  "js/app.js", "js/daten.js", "js/karte.js", "js/karte-daten.js", "js/quiz.js",
+  "js/speicher.js", "js/icons.js", "js/effekte.js",
+  "fonts/nunito-var.woff2", "fonts/grandstander-800.woff2",
+  "icons/icon-192.png", "icons/apple-touch-icon.png",
+];
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(DATEIEN)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim()),
+  );
+});
+
+self.addEventListener("fetch", (e) => {
+  if (e.request.method !== "GET" || new URL(e.request.url).origin !== location.origin) return;
+  e.respondWith(
+    caches.open(VERSION).then(async (cache) => {
+      const alt = await cache.match(e.request, { ignoreSearch: true });
+      const neu = fetch(e.request)
+        .then((antwort) => { if (antwort.ok) cache.put(e.request, antwort.clone()); return antwort; })
+        .catch(() => alt);
+      return alt || neu;
+    }),
+  );
+});

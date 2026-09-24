@@ -1,0 +1,401 @@
+@font-face {
+  font-family: "Grandstander";
+  src: url("../fonts/grandstander-800.woff2") format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("../fonts/nunito-var.woff2") format("woff2");
+  font-weight: 600 900;
+  font-display: swap;
+}
+
+:root {
+  --papier: #FBF5E9;
+  --weiss: #FFFDF8;
+  --tinte: #1E2A4A;
+  --tinte-2: #4A5575;
+  --tinte-3: #8C93A8;
+  --linie: #E6DCC6;
+  --linie-2: #D8CCB2;
+  --raster: #E3D8C0;
+  --land: #EADFC8;
+
+  --koralle: #C94A2B;
+  --koralle-dunkel: #93331D;
+  --koralle-hell: #FBE3DA;
+  --blau: #2267B0;
+  --blau-dunkel: #174D86;
+  --blau-hell: #DCE9F7;
+  --gruen: #1C7F52;
+  --gruen-dunkel: #135C3B;
+  --gruen-hell: #DDF1E6;
+  --gold: #F2B535;
+  --gold-dunkel: #B7860F;
+  --gold-hell: #FBEBC4;
+  --lila: #7A4FB0;
+  --lila-hell: #EDE3F8;
+
+  --display: "Grandstander", "Nunito", system-ui, sans-serif;
+  --text: "Nunito", system-ui, -apple-system, sans-serif;
+  --radius: 20px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--papier);
+}
+
+body {
+  font-family: var(--text);
+  font-weight: 700;
+  color: var(--tinte);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--blau); outline-offset: 2px; }
+
+#app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background-color: var(--papier);
+  background-image: radial-gradient(var(--raster) 1px, transparent 1.2px);
+  background-size: 18px 18px;
+  position: relative;
+}
+/* Quiz und Erkunden passen genau auf den Bildschirm, ohne zu scrollen */
+#app.fix { height: 100vh; height: 100dvh; overflow: hidden; }
+
+h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 800; line-height: 1.1; }
+
+.icon { display: block; flex-shrink: 0; }
+
+/* ---------- Bausteine */
+.karte-box {
+  background: var(--weiss);
+  border: 2px solid var(--linie);
+  border-radius: var(--radius);
+}
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 36px; padding: 0 12px;
+  border-radius: 18px;
+  background: var(--weiss); border: 2px solid var(--linie);
+  font-weight: 900; font-size: 15px; white-space: nowrap;
+}
+.icon-knopf {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 22px; background: transparent;
+  color: var(--tinte-2);
+  flex-shrink: 0;
+}
+.icon-knopf:active { background: var(--linie); }
+
+.knopf {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; min-height: 54px; padding: 0 20px;
+  border: 0; border-radius: 27px;
+  font-weight: 900; font-size: 18px;
+  text-decoration: none;
+  transition: transform .08s ease;
+}
+.knopf:active { transform: translateY(2px); }
+.knopf-haupt { background: var(--koralle); color: #fff; border-bottom: 4px solid var(--koralle-dunkel); }
+.knopf-gruen { background: var(--gruen); color: #fff; border-bottom: 4px solid var(--gruen-dunkel); }
+.knopf-blau { background: var(--blau); color: #fff; border-bottom: 4px solid var(--blau-dunkel); }
+.knopf-leise { background: var(--weiss); color: var(--tinte); border: 2px solid var(--linie); min-height: 50px; font-weight: 800; font-size: 17px; }
+
+.balken { height: 12px; border-radius: 6px; background: var(--linie); overflow: hidden; }
+.balken > div { height: 100%; border-radius: 6px; background: var(--blau); transition: width .5s ease; }
+
+.klein-titel { font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--tinte-2); }
+.leise { color: var(--tinte-2); }
+
+.ton-koralle { --ton: var(--koralle); --ton-hell: var(--koralle-hell); }
+.ton-lila { --ton: var(--lila); --ton-hell: var(--lila-hell); }
+.ton-blau { --ton: var(--blau); --ton-hell: var(--blau-hell); }
+.ton-gold { --ton: #9A6A00; --ton-hell: var(--gold-hell); }
+.ton-gruen { --ton: var(--gruen); --ton-hell: var(--gruen-hell); }
+.icon-kachel {
+  width: 40px; height: 40px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ton-hell); color: var(--ton);
+  flex-shrink: 0;
+}
+
+/* ---------- Karte */
+.karten-rahmen { display: block; }
+svg.karte { display: block; width: 100%; height: 100%; overflow: visible; }
+.land {
+  fill: var(--land);
+  fill-rule: evenodd;
+  stroke: var(--papier);
+  stroke-width: 1.2px;
+  stroke-linejoin: round;
+  transition: fill .3s ease;
+}
+.land.ist-mark { fill: var(--gold); }
+.land.ist-richtig { fill: #4FB386; }
+.land.ist-falsch { fill: #EE8A6E; }
+.land.ist-leise { fill: #D5E3F1; }
+.tippbar .land:active { fill: #DCCFB2; }
+.fluesse-dezent path { fill: none; stroke: #9DBFE0; stroke-width: 1.3px; stroke-linecap: round; stroke-linejoin: round; }
+.fluss, .fluss-rand { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.fluss-rand.fluss-haupt { stroke: var(--papier); stroke-width: 8px; }
+.fluss.fluss-haupt { stroke: var(--blau); stroke-width: 4.5px; }
+.fluss-rand.fluss-neben { stroke: var(--papier); stroke-width: 4.5px; }
+.fluss.fluss-neben { stroke: #3A78BD; stroke-width: 2.5px; }
+.stadt { fill: var(--tinte); stroke: var(--weiss); stroke-width: 1.5px; }
+.stadt-mark { fill: var(--koralle); stroke-width: 2.5px; }
+.ring { fill: none; stroke-width: 1.5px; }
+.ring-tipp { stroke: var(--tinte-2); stroke-dasharray: 3 3; }
+.ring-mark { stroke: var(--koralle); stroke-width: 3px; }
+.hinweis-kreis { fill: rgba(242, 181, 53, .18); stroke: var(--gold-dunkel); stroke-width: 2px; stroke-dasharray: 6 5; }
+.beschriftung {
+  font-family: var(--text); font-weight: 900;
+  fill: var(--tinte);
+  stroke: var(--weiss); stroke-width: 4px; stroke-linejoin: round;
+  paint-order: stroke;
+  pointer-events: none;
+}
+
+/* ---------- Willkommen */
+.willkommen { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 22px; padding: 24px 20px; }
+.willkommen .karten-rahmen { height: 220px; }
+.willkommen h1 { font-size: 34px; text-align: center; }
+.willkommen p { margin: 0; text-align: center; font-size: 17px; color: var(--tinte-2); line-height: 1.4; }
+.feld {
+  width: 100%; height: 56px; padding: 0 18px;
+  border: 2px solid var(--linie); border-radius: 18px; background: var(--weiss);
+  font-size: 20px; font-weight: 800;
+}
+.feld::placeholder { color: var(--tinte-3); }
+
+/* ---------- Start */
+.start { padding: 16px 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+.start-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.start-kopf h1 { font-size: 26px; overflow-wrap: break-word; }
+.start-kopf > div:first-child { min-width: 0; }
+.start-kopf .rang { font-size: 15px; color: var(--tinte-2); margin-top: 3px; }
+.start-kopf .rechts { display: flex; align-items: center; gap: 2px; }
+.flamme { color: var(--koralle); }
+
+.ausmalen { display: flex; gap: 14px; align-items: center; padding: 12px 14px; text-align: left; width: 100%; color: inherit; }
+.ausmalen .karten-rahmen { width: 128px; height: 172px; flex-shrink: 0; }
+.ausmalen .info { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+.ausmalen .zahl { font-family: var(--display); font-weight: 800; font-size: 40px; line-height: 1; }
+.ausmalen .zahl small { font-size: 20px; color: var(--tinte-2); }
+.ausmalen .balken > div { background: var(--gruen); }
+.link-text { display: flex; align-items: center; gap: 4px; color: var(--blau); font-weight: 900; font-size: 15px; }
+
+.missionen-titel { font-size: 21px; margin-top: 4px; }
+.missionen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.mission {
+  display: flex; flex-direction: column; gap: 6px; align-items: flex-start;
+  min-height: 108px; padding: 12px; text-align: left;
+  border-bottom-width: 5px;
+  transition: transform .08s ease;
+}
+.mission:active, .ausmalen:active, .erkunden:active { transform: translateY(2px); }
+.mission .titel, .erkunden .titel { display: block; font-family: var(--display); font-weight: 800; font-size: 17px; line-height: 1.1; }
+.mission .unten { display: flex; align-items: center; justify-content: space-between; gap: 4px; width: 100%; margin-top: auto; }
+.mission .unten span { font-size: 13px; color: var(--tinte-2); }
+.sterne { display: flex; gap: 2px; }
+.erkunden { display: flex; align-items: center; gap: 12px; padding: 12px 14px; width: 100%; text-align: left; border-bottom-width: 5px; }
+.erkunden .text { flex: 1; }
+.erkunden .text > span:not(.titel) { display: block; font-size: 14px; color: var(--tinte-2); margin-top: 2px; }
+
+/* ---------- Quiz */
+.quiz { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.quiz-kopf { display: flex; align-items: center; gap: 8px; padding: 8px 16px 6px 6px; }
+.quiz-kopf .balken { flex: 1; height: 14px; border-radius: 7px; }
+.frage { display: flex; align-items: center; gap: 12px; margin: 2px 16px 0; padding: 10px 14px; }
+.frage .klein { font-size: 14px; font-weight: 800; color: var(--tinte-2); }
+.frage .gross { font-family: var(--display); font-weight: 800; font-size: 26px; line-height: 1.1; overflow-wrap: anywhere; hyphens: auto; }
+.karten-feld { flex: 1; min-height: 110px; position: relative; padding: 8px 16px; display: flex; justify-content: center; }
+.karten-feld.tippbar { cursor: pointer; }
+.antworten { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 0 16px 14px; }
+.antwort {
+  min-height: 58px; padding: 6px 10px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  border: 2px solid var(--linie); border-bottom-width: 5px; border-radius: 18px;
+  background: var(--weiss); color: var(--tinte);
+  font-weight: 800; font-size: 17px; line-height: 1.15; text-align: center;
+  overflow-wrap: anywhere; hyphens: manual;
+  transition: transform .08s ease, background .2s ease;
+}
+.antwort:active:not(:disabled) { transform: translateY(2px); }
+.antwort:disabled { cursor: default; }
+.antwort.lang { font-size: 15px; }
+.antwort.ist-richtig { background: var(--gruen); border-color: var(--gruen-dunkel); color: #fff; animation: springen .35s ease; }
+.antwort.ist-falsch { background: var(--koralle); border-color: var(--koralle-dunkel); color: #fff; animation: wackeln .35s ease; }
+.antwort.ist-loesung { background: var(--gruen-hell); border-color: var(--gruen); color: var(--tinte); }
+.antwort.ist-aus { color: var(--tinte-3); }
+.antwort.ist-weg { visibility: hidden; }
+/* Nach der Antwort bekommt die Karte mehr Platz */
+.beantwortet .frage { padding: 6px 12px; gap: 8px; }
+.beantwortet .frage .icon-kachel { display: none; }
+.beantwortet .frage .klein { font-size: 13px; }
+.beantwortet .frage .gross { font-size: 18px; }
+.beantwortet .antwort.ist-aus { display: none; }
+.quiz-fuss { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 14px; }
+.quiz-fuss .leise { font-size: 13px; line-height: 1.3; }
+.tipp-knopf {
+  height: 48px; padding: 0 16px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px;
+  border-radius: 24px; border: 2px solid var(--linie); background: var(--weiss);
+  font-weight: 800; font-size: 16px;
+}
+.tipp-knopf:disabled { opacity: .45; }
+.tipp-knopf .icon { color: #9A6A00; }
+
+.rueckmeldung {
+  padding: 14px 16px 16px;
+  border-radius: 26px 26px 0 0;
+  display: flex; flex-direction: column; gap: 10px;
+  animation: hoch .25s ease;
+}
+.rueckmeldung.gut { background: var(--gruen-hell); }
+.rueckmeldung.schlecht { background: var(--koralle-hell); }
+.rueckmeldung .zeile { display: flex; align-items: center; gap: 10px; }
+.rueckmeldung .kreis { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+.rueckmeldung.gut .kreis { background: var(--gruen); }
+.rueckmeldung.schlecht .kreis { background: var(--koralle); }
+.rueckmeldung h2 { font-size: 22px; flex: 1; }
+.rueckmeldung.gut h2 { color: var(--gruen-dunkel); }
+.rueckmeldung.schlecht h2 { color: var(--koralle-dunkel); }
+.rueckmeldung .plus { font-weight: 900; font-size: 16px; color: var(--gruen-dunkel); }
+.rueckmeldung p { margin: 0; font-size: 16px; line-height: 1.4; }
+
+.toast {
+  position: absolute; left: 50%; top: calc(env(safe-area-inset-top) + 64px);
+  transform: translateX(-50%);
+  padding: 10px 16px; border-radius: 22px;
+  background: var(--tinte); color: #fff;
+  font-weight: 900; font-size: 16px; white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+  animation: toast 1.8s ease forwards;
+  pointer-events: none; z-index: 5;
+}
+
+/* ---------- Ergebnis */
+.ergebnis { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px 16px 18px; }
+.gross-sterne { display: flex; align-items: flex-end; gap: 4px; }
+.gross-sterne .icon { animation: stern .5s cubic-bezier(.2, 1.6, .4, 1) both; }
+.gross-sterne .mitte { margin-bottom: 14px; }
+.ergebnis h1 { font-size: 29px; text-align: center; overflow-wrap: break-word; }
+.ergebnis .quote { font-size: 17px; font-weight: 800; color: var(--tinte-2); text-align: center; margin-top: 4px; }
+.kacheln { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.kachel { padding: 12px; display: flex; align-items: center; gap: 10px; }
+.kachel b { display: block; font-weight: 900; font-size: 22px; }
+.kachel span { font-size: 13px; color: var(--tinte-2); }
+.neu-karte { width: 100%; padding: 12px 14px; display: flex; align-items: center; gap: 14px; }
+.neu-karte .karten-rahmen { width: 100px; height: 134px; flex-shrink: 0; }
+.neu-karte h2 { font-size: 24px; }
+.neu-karte p { margin: 4px 0 0; font-size: 14px; color: var(--tinte-2); line-height: 1.35; }
+.rang-fortschritt { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.rang-fortschritt .zeile { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 800; }
+.ergebnis .knoepfe { margin-top: auto; width: 100%; display: flex; flex-direction: column; gap: 10px; }
+
+/* ---------- Album */
+.album { padding: 8px 16px 24px; }
+.album-kopf { display: flex; align-items: center; gap: 4px; margin-left: -10px; }
+.album-kopf h1 { font-size: 26px; }
+.legende { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; font-weight: 800; color: var(--tinte-2); margin: 8px 0 14px; }
+.legende span { display: flex; align-items: center; gap: 5px; }
+.punkt { width: 10px; height: 10px; border-radius: 5px; background: var(--linie-2); display: inline-block; }
+.punkt.an { background: var(--gruen); }
+.stempel-raster { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.stempel {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 12px 6px 10px; border-radius: 18px;
+  background: #F4ECDC; border: 2px dashed var(--linie-2);
+  color: var(--tinte-2);
+}
+.stempel.voll { background: var(--weiss); border-style: solid; border-color: var(--linie); color: var(--tinte); }
+.stempel svg { width: 56px; height: 56px; }
+.stempel .name { font-size: 13px; font-weight: 800; line-height: 1.15; text-align: center; min-height: 30px; display: flex; align-items: center; overflow-wrap: anywhere; }
+.stempel .punkte { display: flex; gap: 5px; }
+
+/* ---------- Erkunden */
+.erkunden-seite { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.seiten-kopf { display: flex; align-items: center; gap: 4px; padding: 8px 16px 0 6px; }
+.seiten-kopf h1 { font-size: 24px; }
+.hinweis-zeile { padding: 2px 16px 0; font-size: 15px; color: var(--tinte-2); }
+
+/* ---------- Info-Blatt (Land) und Dialoge */
+.info-blatt { padding: 14px 16px 16px; border-radius: 26px 26px 0 0; background: var(--weiss); border-top: 2px solid var(--linie); display: flex; flex-direction: column; gap: 10px; animation: hoch .25s ease; }
+.info-blatt h2 { font-size: 24px; }
+.info-zeile { display: flex; gap: 10px; align-items: flex-start; font-size: 16px; }
+.info-zeile .icon-kachel { width: 34px; height: 34px; border-radius: 11px; }
+.info-zeile .was { font-size: 13px; font-weight: 800; color: var(--tinte-2); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; }
+.chip { padding: 4px 10px; border-radius: 14px; background: var(--blau-hell); color: var(--blau-dunkel); font-weight: 800; font-size: 15px; }
+.info-blatt p { margin: 0; font-size: 15px; line-height: 1.4; color: var(--tinte-2); }
+
+.schleier {
+  position: fixed; inset: 0; z-index: 10;
+  background: rgba(30, 42, 74, .45);
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: einblenden .2s ease;
+}
+.dialog {
+  width: 100%; max-width: 520px; max-height: 92dvh; overflow: auto;
+  background: var(--papier);
+  border-radius: 26px 26px 0 0;
+  padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 12px;
+  animation: hoch .25s ease;
+}
+.dialog h2 { font-size: 24px; }
+.dialog p { margin: 0; font-size: 16px; line-height: 1.4; color: var(--tinte-2); }
+.dialog .karten-rahmen { height: 230px; }
+.schalter-zeile { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; font-size: 17px; }
+.schalter { width: 56px; height: 32px; border-radius: 16px; border: 0; background: var(--linie-2); position: relative; flex-shrink: 0; }
+.schalter::after { content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 13px; background: #fff; transition: transform .2s ease; }
+.schalter[aria-checked="true"] { background: var(--gruen); }
+.schalter[aria-checked="true"]::after { transform: translateX(24px); }
+
+.konfetti { position: fixed; inset: 0; pointer-events: none; z-index: 20; }
+
+/* ---------- Bewegung */
+@keyframes hoch { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes einblenden { from { opacity: 0; } to { opacity: 1; } }
+@keyframes springen { 40% { transform: scale(1.06); } }
+@keyframes wackeln { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+@keyframes stern { from { transform: scale(0) rotate(-40deg); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes toast { 0% { opacity: 0; transform: translate(-50%, -8px); } 15%, 80% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ---------- Kleine Höhe (iPhone SE in Safari mit Adressleiste) */
+@media (max-height: 600px) {
+  .frage { padding: 8px 12px; }
+  .frage .gross { font-size: 22px; }
+  .frage .icon-kachel { width: 34px; height: 34px; }
+  .antwort { min-height: 52px; }
+  .rueckmeldung { padding: 10px 14px 12px; gap: 8px; }
+  .rueckmeldung p { font-size: 15px; }
+  .rueckmeldung h2 { font-size: 20px; }
+  .rueckmeldung .knopf { min-height: 48px; }
+  .ergebnis { gap: 10px; padding-top: 14px; }
+  .gross-sterne .icon { width: 52px; height: 52px; }
+  .gross-sterne .mitte .icon { width: 68px; height: 68px; }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "bundeslaender-quiz-tools",
+  "private": true,
+  "type": "module",
+  "description": "Erzeugt js/karte-daten.js aus freien Geodaten",
+  "scripts": {
+    "karte": "node build-karte.mjs quellen ../js/karte-daten.js 0.3"
+  },
+  "devDependencies": {
+    "topojson-client": "^3.1.0",
+    "topojson-server": "^3.0.1",
+    "topojson-simplify": "^3.0.3"
+  }
+}
