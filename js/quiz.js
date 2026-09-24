@@ -1,7 +1,7 @@
 // Fragen erzeugen: welche Fakten dran sind, welcher Fragetyp, welche falschen Antworten.
 import { LAENDER, LAND, FLUESSE, mitArtikel, laenderMitFluss } from "./daten.js";
 import { KARTE } from "./karte-daten.js";
-import { faktStat } from "./speicher.js";
+import { faktStat, MAX_BOX } from "./speicher.js";
 import { STADTSTAAT_RINGE, STADT_VON_STADTSTAAT } from "./karte.js";
 
 export const MISSIONEN = {
@@ -32,12 +32,21 @@ const FAKTEN = {
  * @param {number} jetzt  Date.now()
  */
 export function gewicht(stat, jetzt) {
-  // TODO(Papa): Hier entscheidest du, wie das Quiz übt. Ideen:
-  //  - niedrige Fächer (box) deutlich öfter ziehen als hohe
-  //  - Fakten, die lange nicht dran waren, wieder etwas wichtiger machen
-  //  - Fakten mit vielen Fehlern (falsch) bevorzugen
-  // Solange hier 1 steht, ist jede Frage gleich wahrscheinlich.
-  return 1;
+  // Unsichere Fakten deutlich öfter: Fach 0 → 16, 1 → 8, 2 → 4, 3 → 2, 4 → 1
+  let w = 2 ** (MAX_BOX - stat.box);
+  if (!stat.zuletzt) return w; // noch nie gefragt: zählt wie Fach 0
+
+  // Lange nicht gefragt: alle 3 Tage +100 %, höchstens ×3, damit Gekonntes nicht in Vergessenheit gerät
+  const tage = (jetzt - stat.zuletzt) / 864e5;
+  w *= 1 + Math.min(2, tage / 3);
+
+  // Echte Stolpersteine (z. B. Mainz und Wiesbaden) leicht bevorzugen
+  const versuche = stat.richtig + stat.falsch;
+  if (versuche >= 2) w *= 1 + stat.falsch / versuche;
+
+  // Gerade erst dran gewesen: zurückhalten, damit "Nochmal spielen" nicht dieselben Fragen bringt
+  if (jetzt - stat.zuletzt < 2 * 60 * 1000) w *= 0.3;
+  return w;
 }
 
 function ziehe(fakten, anzahl) {
