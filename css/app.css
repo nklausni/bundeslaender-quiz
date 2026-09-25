@@ -376,6 +376,22 @@ svg.karte { display: block; width: 100%; height: 100%; overflow: visible; }
 
 .konfetti { position: fixed; inset: 0; pointer-events: none; z-index: 20; }
 
+/* ---------- Titel wählen */
+.titel-wahl { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 24px 16px; }
+.titel-wahl .titel-icon { display: flex; justify-content: center; color: var(--blau); }
+.titel-wahl h1 { font-size: 27px; line-height: 1.15; text-align: center; overflow-wrap: break-word; }
+.titel-wahl p { margin: 0 0 6px; font-size: 16px; line-height: 1.4; text-align: center; color: var(--tinte-2); }
+.titel-optionen { display: flex; flex-direction: column; gap: 10px; }
+.titel-option { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 16px; text-align: left; border-bottom-width: 5px; }
+.titel-option:active { transform: translateY(2px); border-color: var(--blau); background: #EAF2FB; }
+.titel-option .kreis { width: 26px; height: 26px; border-radius: 13px; border: 2px solid #C9BC9F; flex-shrink: 0; }
+.titel-option .titel { display: block; font-family: var(--display); font-weight: 800; font-size: 21px; line-height: 1.1; }
+.titel-option .text > span:last-child { display: block; margin-top: 3px; font-size: 14px; line-height: 1.35; color: var(--tinte-2); }
+.titel-zeile { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; font-size: 17px; }
+.segmente { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.segment { min-height: 44px; padding: 6px 4px; border: 2px solid var(--linie); border-radius: 12px; background: var(--papier); font-weight: 800; font-size: 14px; line-height: 1.15; }
+.segment[aria-checked="true"] { border-color: var(--blau); background: #EAF2FB; color: var(--blau-dunkel); }
+
 /* ---------- Expertenmodus */
 .unsichtbar { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .wackeln { animation: wackeln .35s ease; }

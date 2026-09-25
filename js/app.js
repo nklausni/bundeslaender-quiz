@@ -1,4 +1,4 @@
-import { LAENDER, LAND, STIFT, FLUESSE, mitArtikel } from "./daten.js";
+import { LAENDER, LAND, STIFT, FLUESSE, ANREDEN, mitArtikel } from "./daten.js";
 import { KARTE } from "./karte-daten.js";
 import { karteSvg, skaliere, landBeiTipp, laenderBeiTipp, STADTSTAAT_RINGE, STADT_VON_STADTSTAAT } from "./karte.js";
 import { MISSIONEN, neueRunde, frageNochmal } from "./quiz.js";
@@ -75,9 +75,27 @@ function zeigeWillkommen() {
   </form>`);
 }
 
+// ---------------------------------------------------------------- Titel wählen
+// Einmal pro Spielstand: Das Kind sucht sich die Titelform selbst aus.
+function zeigeTitelWahl() {
+  const s = sp.get();
+  zeige(`<div class="titel-wahl">
+    <div class="titel-icon">${icon("medal", 56, { sw: 1.8 })}</div>
+    <h1>Hallo ${esc(s.name)}! Welche Titel möchtest du sammeln?</h1>
+    <p>Mit jedem Punkt kommst du deinem nächsten Titel näher. Du kannst das später in den Einstellungen ändern.</p>
+    <div class="titel-optionen">
+      ${Object.entries(ANREDEN).map(([k, a]) => `<button class="karte-box titel-option" data-aktion="anrede" data-wert="${k}">
+        <span class="kreis" aria-hidden="true"></span>
+        <span class="text"><span class="titel">${trenn(a.titel)}</span><span>${esc(a.beispiele)}</span></span>
+      </button>`).join("")}
+    </div>
+  </div>`);
+}
+
 // ---------------------------------------------------------------- Start
 function zeigeStart() {
   runde = null;
+  if (!sp.get().anrede) return zeigeTitelWahl();
   // Abzeichen, die schon mit dem bisherigen Fortschritt verdient sind, vor dem Zeichnen vergeben
   const neu = vergibAbzeichen();
   const s = sp.get();
@@ -647,7 +665,7 @@ function goldKarte(neu) {
   if (s.goldStempel.length === 16) {
     return `<div class="karte-box neu-karte">
       <span class="karten-rahmen">${karteSvg({ farben })}</span>
-      <div><div class="klein-titel">Unglaublich</div><h2>Ganz Deutschland golden!</h2><p>Du bist eine echte Deutschland-Expertin.</p></div>
+      <div><div class="klein-titel">Unglaublich</div><h2>Ganz Deutschland golden!</h2><p>${sp.nachAnrede({ w: "Du bist eine echte Deutschland-Expertin.", m: "Du bist ein echter Deutschland-Experte.", n: "Du bist ein echtes Deutschland-Ass." })}</p></div>
     </div>`;
   }
   const kandidaten = LAENDER.filter((l) => !s.goldStempel.includes(l.id)).map((l) => {
@@ -783,6 +801,10 @@ function zeigeEinstellungen() {
       <input class="feld" name="name" maxlength="20" autocomplete="off" value="${esc(s.name)}" aria-label="Name" required>
       <button class="knopf knopf-blau" type="submit" style="width:auto">Ändern</button>
     </form>
+    <div class="karte-box titel-zeile" role="radiogroup" aria-labelledby="titel-label">
+      <span id="titel-label">Titel</span>
+      <div class="segmente">${Object.entries(ANREDEN).map(([k, a]) => `<button class="segment" role="radio" aria-checked="${s.anrede === k}" data-aktion="anrede-einstellung" data-wert="${k}">${trenn(a.titel)}</button>`).join("")}</div>
+    </div>
     <div class="karte-box schalter-zeile">
       <span id="ton-label">Töne</span>
       <button class="schalter" role="switch" aria-checked="${s.ton}" aria-labelledby="ton-label" data-aktion="ton"></button>
@@ -831,6 +853,13 @@ const AKTIONEN = {
   "erkunden-tipp": (_, __, e) => erkundenTipp(e),
   einstellungen: () => zeigeEinstellungen(),
   "dialog-zu": () => schliesseDialog(),
+  anrede: (wert) => { sp.setze({ anrede: wert }); zeigeStart(); },
+  "anrede-einstellung": (wert, el) => {
+    sp.setze({ anrede: wert });
+    for (const b of el.parentElement.children) b.setAttribute("aria-checked", String(b === el));
+    const rangZeile = app.querySelector(".start-kopf .rang");
+    if (rangZeile) rangZeile.textContent = `${sp.rang().name} · ${sp.get().punkte} Punkte`;
+  },
   schleier: (_, el, e) => { if (e.target === el) schliesseDialog(); },
   ton: (_, el) => {
     const an = !sp.get().ton;

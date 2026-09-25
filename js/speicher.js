@@ -5,13 +5,14 @@ import { LAENDER, RAENGE } from "./daten.js";
 // den bisherigen Fortschritt. Neue Felder werden beim Laden nur ergänzt, nie ersetzt.
 const SCHLUESSEL = "bundeslaender-quiz-v1";
 const SICHERUNG = "bundeslaender-quiz-sicherung";
-const SCHEMA = 2; // 1 = Grundspiel, 2 = mit Expertenmodus
+const SCHEMA = 3; // 1 = Grundspiel, 2 = mit Expertenmodus, 3 = Titelform selbst gewählt
 export const MAX_BOX = 4;   // Lernkarteien-Fach: 0 = neu, 4 = sitzt sicher
 export const GEKONNT = 2;   // ab diesem Fach zählt ein Fakt als gekonnt
 
 const leer = () => ({
   schema: SCHEMA,
   name: "",
+  anrede: null,  // "w" | "m" | "n": welche Titelform das Kind gewählt hat, null = noch nicht gefragt
   punkte: 0,
   serie: { tage: 0, letzterTag: null, beste: 0 },
   sterne: {},    // Mission -> beste Sternezahl
@@ -44,8 +45,11 @@ function laden() {
     roh = localStorage.getItem(SCHLUESSEL);
     if (!roh) return leer();
     const alt = JSON.parse(roh);
-    // Vor dem ersten Umbau eine unveränderte Kopie ablegen, falls doch etwas schiefgeht
-    if ((alt.schema ?? 1) < SCHEMA && !localStorage.getItem(SICHERUNG)) localStorage.setItem(SICHERUNG, roh);
+    // Vor jedem Umbau eine unveränderte Kopie des alten Stands ablegen, falls doch etwas schiefgeht.
+    // Schema 1 liegt aus früheren Versionen unter dem Schlüssel ohne Zusatz.
+    const altSchema = alt.schema ?? 1;
+    const kopie = altSchema === 1 ? SICHERUNG : `${SICHERUNG}-schema${altSchema}`;
+    if (altSchema < SCHEMA && !localStorage.getItem(kopie)) localStorage.setItem(kopie, roh);
     return migriere(alt);
   } catch {
     // Unlesbare Daten nicht einfach überschreiben: zur Sicherung legen, dann neu anfangen
@@ -70,8 +74,8 @@ export function setze(teil) {
 }
 
 export function zuruecksetzen() {
-  const { name, ton } = stand;
-  stand = { ...leer(), name, ton, profi: { ...leer().profi, vorgestellt: stand.profi.vorgestellt } };
+  const { name, ton, anrede } = stand;
+  stand = { ...leer(), name, ton, anrede, profi: { ...leer().profi, vorgestellt: stand.profi.vorgestellt } };
   sichern();
 }
 
@@ -161,10 +165,18 @@ export function aktuelleSerie() {
   return letzterTag === heute || letzterTag === gestern ? tage : 0;
 }
 
+// Text in der gewählten Form: nachAnrede({ w: "…", m: "…", n: "…" }). Ohne Wahl neutral.
+export const nachAnrede = (formen) => formen[stand.anrede] ?? formen.n;
+
 export function rang(punkte = stand.punkte) {
   let i = 0;
   while (i + 1 < RAENGE.length && punkte >= RAENGE[i + 1].ab) i++;
   const naechster = RAENGE[i + 1] ?? null;
   const anteil = naechster ? (punkte - RAENGE[i].ab) / (naechster.ab - RAENGE[i].ab) : 1;
-  return { name: RAENGE[i].name, naechster, fehlt: naechster ? naechster.ab - punkte : 0, anteil };
+  return {
+    name: nachAnrede(RAENGE[i].name),
+    naechster: naechster && { ab: naechster.ab, name: nachAnrede(naechster.name) },
+    fehlt: naechster ? naechster.ab - punkte : 0,
+    anteil,
+  };
 }

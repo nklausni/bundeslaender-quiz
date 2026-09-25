@@ -14,6 +14,8 @@ Das Quiz ist für das iPhone SE (375 × 667 Punkte) ausgelegt und läuft in jede
 
 Motivation: Punkte, Ränge, Sterne pro Mission, Tage in Folge und ein Deutschlandbild, das sich Land für Land bunt ausmalt, sobald Lage, Hauptstadt und Flüsse sitzen. Falsch beantwortete Fragen kommen in derselben Runde noch einmal.
 
+Die Titel gibt es in drei Formen (Entdeckerin, Entdecker, Entdeckungs-Profi). Nach der Namenseingabe sucht sich das Kind die Form selbst aus, änderbar in den Einstellungen. Die App schließt nicht vom Namen auf das Geschlecht.
+
 ### Expertenmodus
 
 Wird frei ab 8 Stempeln oder 600 Punkten. Statt auszuwählen werden die Namen selbst geschrieben:
@@ -28,7 +30,7 @@ Neue Ziele: Goldstempel („Deutschland vergolden“, wenn Name, Hauptstadt und 
 
 ### Fortschritt bei Updates
 
-Der Spielstand liegt unter dem Schlüssel `bundeslaender-quiz-v1`. Neue Versionen ergänzen fehlende Felder (`migriere()` in `js/speicher.js`), vorhandene Werte werden nie überschrieben. Vor dem ersten Umbau auf ein neues Format legt die App eine unveränderte Kopie unter `bundeslaender-quiz-sicherung` ab.
+Der Spielstand liegt unter dem Schlüssel `bundeslaender-quiz-v1`. Neue Versionen ergänzen fehlende Felder (`migriere()` in `js/speicher.js`), vorhandene Werte werden nie überschrieben. Vor jedem Umbau auf ein neues Format legt die App eine unveränderte Kopie ab (`bundeslaender-quiz-sicherung` für das erste Format, danach `…-sicherung-schema2` usw.).
 
 Auf dem iPhone in Safari „Teilen“ → „Zum Home-Bildschirm“ wählen, dann startet das Quiz im Vollbild und funktioniert auch offline.
 

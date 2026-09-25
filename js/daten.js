@@ -89,16 +89,24 @@ export const STIFT = {
   rp: "#F3C6A5", sl: "#9FD3D6", by: "#A9C3EE", bw: "#F1D08A",
 };
 
+// Titel gibt es in drei Formen. Das Kind wählt selbst, welche es sammeln möchte,
+// statt dass die App aus dem Namen auf ein Geschlecht schließt.
+export const ANREDEN = {
+  w: { titel: "Entdeckerin", beispiele: "Kartenleserin, Pfadfinderin, Kartenmeisterin …" },
+  m: { titel: "Entdecker", beispiele: "Kartenleser, Pfadfinder, Kartenmeister …" },
+  n: { titel: "Entdeckungs-Profi", beispiele: "Karten-Talent, Kompass-Ass, Karten-Genie …" },
+};
+
 export const RAENGE = [
-  { ab: 0, name: "Kartenneuling" },
-  { ab: 100, name: "Kartenleserin" },
-  { ab: 300, name: "Pfadfinderin" },
-  { ab: 600, name: "Entdeckerin" },
-  { ab: 1000, name: "Weltenbummlerin" },
-  { ab: 1600, name: "Deutschland-Profi" },
-  { ab: 2500, name: "Geografie-Ass" },
-  { ab: 3500, name: "Kartenmeisterin" },
-  { ab: 5000, name: "Deutschland-Legende" },
+  { ab: 0, name: { w: "Kartenneuling", m: "Kartenneuling", n: "Kartenneuling" } },
+  { ab: 100, name: { w: "Kartenleserin", m: "Kartenleser", n: "Karten-Talent" } },
+  { ab: 300, name: { w: "Pfadfinderin", m: "Pfadfinder", n: "Kompass-Ass" } },
+  { ab: 600, name: { w: "Entdeckerin", m: "Entdecker", n: "Entdeckungs-Profi" } },
+  { ab: 1000, name: { w: "Weltenbummlerin", m: "Weltenbummler", n: "Reise-Star" } },
+  { ab: 1600, name: { w: "Deutschland-Profi", m: "Deutschland-Profi", n: "Deutschland-Profi" } },
+  { ab: 2500, name: { w: "Geografie-Ass", m: "Geografie-Ass", n: "Geografie-Ass" } },
+  { ab: 3500, name: { w: "Kartenmeisterin", m: "Kartenmeister", n: "Karten-Genie" } },
+  { ab: 5000, name: { w: "Deutschland-Legende", m: "Deutschland-Legende", n: "Deutschland-Legende" } },
 ];
 
 // "der Rhein" / "die Elbe" – mit großem Anfangsbuchstaben für Satzanfänge
