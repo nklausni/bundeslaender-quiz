@@ -79,8 +79,10 @@ export function skaliere(root = document) {
   }
 }
 
-// Welches Land liegt unter dem Finger?
-export function landBeiTipp(svg, clientX, clientY) {
+// Welche Länder kommen für einen Tipp in Frage? Zuerst der Tippkreis eines Stadtstaats,
+// dann das Land direkt unter dem Finger. Nahe Berlin können das zwei verschiedene sein.
+export function laenderBeiTipp(svg, clientX, clientY) {
+  const treffer = [];
   const m = svg.getScreenCTM();
   if (m) {
     let bestes = null, abstand = TIPP_RADIUS_PX;
@@ -90,11 +92,14 @@ export function landBeiTipp(svg, clientX, clientY) {
       const d = Math.hypot(p.x - clientX, p.y - clientY);
       if (d < abstand) { bestes = land; abstand = d; }
     }
-    if (bestes) return bestes;
+    if (bestes) treffer.push(bestes);
   }
-  const el = document.elementFromPoint(clientX, clientY);
-  return el?.closest?.("[data-land]")?.dataset.land ?? null;
+  const direkt = document.elementFromPoint(clientX, clientY)?.closest?.("[data-land]")?.dataset.land;
+  if (direkt && !treffer.includes(direkt)) treffer.push(direkt);
+  return treffer;
 }
+
+export const landBeiTipp = (svg, clientX, clientY) => laenderBeiTipp(svg, clientX, clientY)[0] ?? null;
 
 export const STADTSTAAT_RINGE = STADTSTAATEN.map(([, stadt]) => ({ stadt, art: "tipp" }));
 export const STADT_VON_STADTSTAAT = Object.fromEntries(STADTSTAATEN);

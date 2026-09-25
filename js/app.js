@@ -1,6 +1,6 @@
 import { LAENDER, LAND, STIFT, FLUESSE } from "./daten.js";
 import { KARTE } from "./karte-daten.js";
-import { karteSvg, skaliere, landBeiTipp, STADTSTAAT_RINGE, STADT_VON_STADTSTAAT } from "./karte.js";
+import { karteSvg, skaliere, landBeiTipp, laenderBeiTipp, STADTSTAAT_RINGE, STADT_VON_STADTSTAAT } from "./karte.js";
 import { MISSIONEN, neueRunde, frageNochmal } from "./quiz.js";
 import * as sp from "./speicher.js";
 import { icon, stern, sterne } from "./icons.js";
@@ -130,8 +130,11 @@ function quizKopf() {
 function karteTipp(e) {
   if (!runde || runde.beantwortet) return;
   const svg = app.querySelector("[data-karte] svg");
-  const land = landBeiTipp(svg, e.clientX, e.clientY);
-  if (land) beantworte(land); // Tipp aufs Meer oder ins Ausland zählt nicht
+  const kandidaten = laenderBeiTipp(svg, e.clientX, e.clientY);
+  if (!kandidaten.length) return; // Tipp aufs Meer oder ins Ausland zählt nicht
+  // Trifft der Finger im Grenzbereich zwei Länder und eines ist das gesuchte, zählt das gesuchte
+  const { richtig } = runde.fragen[runde.i];
+  beantworte(kandidaten.includes(richtig) ? richtig : kandidaten[0]);
 }
 
 function tippGeben(knopf) {
