@@ -15,6 +15,11 @@ const PFADE = {
   replay: '<path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4.5v4h4"/>',
   gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M4.2 7.5l2.1 1.2M17.7 15.3l2.1 1.2M4.2 16.5l2.1-1.2M17.7 8.7l2.1-1.2"/><circle cx="12" cy="12" r="6.6"/>',
   compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  pencil: '<path d="M4 20l1.2-4.6L15.6 5a2.1 2.1 0 0 1 3 3L8.2 18.4z"/><path d="M13.5 7l3 3"/>',
+  crown: '<path d="M4 18h16M4.5 15.5L3 7.5l5 3.5 4-6 4 6 5-3.5-1.5 8z"/>',
+  lock: '<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+  medal: '<circle cx="12" cy="14.5" r="5.5"/><path d="M8.5 3l2.2 6.3M15.5 3l-2.2 6.3M12 12.3v4.4"/>',
+  target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
 };
 
 export function icon(name, size = 22, { fill = "none", sw = 2.2, klasse = "" } = {}) {

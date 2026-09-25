@@ -49,7 +49,7 @@ export function gewicht(stat, jetzt) {
   return w;
 }
 
-function ziehe(fakten, anzahl) {
+export function ziehe(fakten, anzahl) {
   const jetzt = Date.now();
   const pool = fakten.map((id) => ({ id, w: Math.max(0.01, gewicht(faktStat(id), jetzt) || 0.01) }));
   const gezogen = [];
@@ -78,7 +78,7 @@ export const mischen = (a) => {
 };
 const zufall = (a) => a[Math.floor(Math.random() * a.length)];
 const liste = (a) => (a.length < 2 ? a.join("") : `${a.slice(0, -1).join(", ")} und ${a[a.length - 1]}`);
-const anDem = (flussId) => (FLUESSE[flussId].artikel === "der" ? `am ${FLUESSE[flussId].name}` : `an der ${FLUESSE[flussId].name}`);
+export const anDem = (flussId) => (FLUESSE[flussId].artikel === "der" ? `am ${FLUESSE[flussId].name}` : `an der ${FLUESSE[flussId].name}`);
 
 const mitte = (id) => { const [x0, y0, x1, y1] = KARTE.laender[id].box; return [(x0 + x1) / 2, (y0 + y1) / 2]; };
 const abstand = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
@@ -142,7 +142,7 @@ function lageErkennen(id, fakt) {
   };
 }
 
-function hauptstadtText(l) {
+export function hauptstadtText(l) {
   if (l.hauptstadt === l.name) return `${l.name} ist ein Stadtstaat: Stadt und Bundesland haben denselben Namen.`;
   return l.stadtFluss ? `${l.hauptstadt} liegt ${anDem(l.stadtFluss)}.` : l.fakt;
 }
@@ -179,7 +179,7 @@ function hauptstadtRueck(id, fakt) {
   };
 }
 
-function flussText(fid) {
+export function flussText(fid) {
   const laender = laenderMitFluss(fid).map((l) => l.name);
   const staedte = LAENDER.filter((l) => l.stadtFluss === fid).map((l) => l.hauptstadt);
   let t = `${mitArtikel(fid, true)} fließt durch ${liste(laender)}.`;

@@ -96,6 +96,9 @@ export const RAENGE = [
   { ab: 600, name: "Entdeckerin" },
   { ab: 1000, name: "Weltenbummlerin" },
   { ab: 1600, name: "Deutschland-Profi" },
+  { ab: 2500, name: "Geografie-Ass" },
+  { ab: 3500, name: "Kartenmeisterin" },
+  { ab: 5000, name: "Deutschland-Legende" },
 ];
 
 // "der Rhein" / "die Elbe" – mit großem Anfangsbuchstaben für Satzanfänge
