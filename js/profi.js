@@ -1,5 +1,5 @@
 // Expertenmodus: Namen selbst schreiben statt auswählen.
-import { LAENDER, LAND, FLUESSE, mitArtikel } from "./daten.js";
+import { LAENDER, LAND, FLUESSE, mitArtikel, landName, vonLand } from "./daten.js";
 import { KARTE } from "./karte-daten.js";
 import { STADT_VON_STADTSTAAT } from "./karte.js";
 import { ziehe, mischen, flussText, anDem } from "./quiz.js";
@@ -7,7 +7,7 @@ import { ziehe, mischen, flussText, anDem } from "./quiz.js";
 export const PROFI_MISSIONEN = {
   "profi-laender": { titel: "Länder schreiben", untertitel: "Markiertes Land benennen", icon: "pin", ton: "koralle", anzahl: 10 },
   "profi-staedte": { titel: "Hauptstädte schreiben", untertitel: "16 Städte ohne Auswahl", icon: "castle", ton: "lila", anzahl: 10 },
-  "profi-fluesse": { titel: "Flüsse schreiben", untertitel: "22 Flüsse ohne Auswahl", icon: "waves", ton: "blau", anzahl: 10 },
+  "profi-fluesse": { titel: "Flüsse schreiben", untertitel: `${Object.keys(FLUESSE).length} Flüsse ohne Auswahl`, icon: "waves", ton: "blau", anzahl: 10 },
   "profi-sammler": { titel: "Flüsse-Sammler", untertitel: "Alle Flüsse eines Landes", icon: "target", ton: "gruen", anzahl: 5 },
   "profi-pruefung": { titel: "Profi-Prüfung", untertitel: "Alles gemischt", icon: "crown", ton: "gold", anzahl: 10 },
 };
@@ -60,10 +60,10 @@ function stadtSchreiben(id, fakt) {
   const nachLand = Math.random() < 0.5;
   const erklaerung = l.hauptstadt === l.name
     ? `${l.name} ist ein Stadtstaat: Stadt und Bundesland heißen gleich.`
-    : `${l.hauptstadt} ist die Hauptstadt von ${l.name}.${l.stadtFluss ? ` Sie liegt ${anDem(l.stadtFluss)}.` : ""}`;
+    : `${l.hauptstadt} ist die Hauptstadt ${vonLand(l)}.${l.stadtFluss ? ` Sie liegt ${anDem(l.stadtFluss)}.` : ""}`;
   return {
     typ: "text", fakt, kategorie: "stadt", ziel: id, richtig: l.hauptstadt, icon: "castle", ton: "lila",
-    klein: nachLand ? "Schreib die Hauptstadt von" : "Schreib den Namen:",
+    klein: nachLand ? `Schreib die Hauptstadt ${l.artikel ? "vom" : "von"}` : "Schreib den Namen:",
     gross: nachLand ? l.name : "Welche Hauptstadt liegt hier?",
     platzhalter: "Hauptstadt …",
     // Mainz/Wiesbaden und Berlin/Potsdam liegen so dicht beieinander, dass der Punkt allein nicht reicht
@@ -87,7 +87,7 @@ function sammler(id, fakt) {
   const l = LAND[id];
   return {
     typ: "sammler", fakt, land: id, ziel: l.fluesse.slice(), icon: "target", ton: "gruen",
-    klein: "Nenne alle Flüsse von", gross: l.name, platzhalter: "Nächster Fluss …",
+    klein: `Nenne alle Flüsse ${l.artikel ? "vom" : "von"}`, gross: l.name, platzhalter: "Nächster Fluss …",
     karte: (gefunden, fehlend = []) => ({
       zustand: { [id]: "mark" }, ringe: markRing(id),
       fluesse: [...fehlend.map((f) => ({ id: f, art: "neben" })), ...gefunden.map((f) => ({ id: f, art: "haupt" }))],
@@ -97,11 +97,13 @@ function sammler(id, fakt) {
 
 // ---------- Antworten prüfen
 // Vergleichsform: klein, Umlaute ausgeschrieben, nur Buchstaben ("Baden-Württemberg" -> "badenwuerttemberg")
-export const normal = (s) => String(s).toLowerCase()
+export const normal = (s) => ohneArtikel(s).toLowerCase()
   .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
   .replace(/[^a-z]/g, "");
+// "das Saarland" oder "die Elbe" zählt wie "Saarland" und "Elbe"
+const ohneArtikel = (s) => String(s).trim().replace(/^(der|die|das)\s+/i, "");
 // "Perfekt" heißt: dieselben Buchstaben samt Umlauten und Bindestrich, nur Groß/klein ist egal
-const perfektGleich = (eingabe, name) => eingabe.trim().replace(/\s+/g, " ").toLocaleLowerCase("de") === name.toLocaleLowerCase("de");
+const perfektGleich = (eingabe, name) => ohneArtikel(eingabe).replace(/\s+/g, " ").toLocaleLowerCase("de") === name.toLocaleLowerCase("de");
 
 export function abstand(a, b) {
   const d = Array.from({ length: b.length + 1 }, (_, j) => j);
@@ -176,7 +178,7 @@ export function pruefeSammler(eingabe, landId, gefunden) {
 export function anderesText(anderes, frage) {
   if (!anderes) return "";
   const gesucht = { land: "ein Bundesland", stadt: "eine Hauptstadt", fluss: "ein Fluss" }[frage.kategorie];
-  if (anderes.kat === "stadt") return `${anderes.name} ist die Hauptstadt von ${LAND[anderes.id].name}.`;
+  if (anderes.kat === "stadt") return `${anderes.name} ist die Hauptstadt ${vonLand(LAND[anderes.id])}.`;
   if (anderes.kat === "land") return anderes.kat === frage.kategorie ? `${anderes.name} ist ein anderes Bundesland.` : `${anderes.name} ist ein Bundesland. Gesucht ist ${gesucht}.`;
   return anderes.kat === frage.kategorie ? `Das ist nicht ${mitArtikel(anderes.id)}.` : `${mitArtikel(anderes.id, true)} ist ein Fluss. Gesucht ist ${gesucht}.`;
 }

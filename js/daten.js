@@ -1,4 +1,4 @@
-// Lerninhalte: 16 Bundesländer, ihre Hauptstädte und 22 große Flüsse Deutschlands.
+// Lerninhalte: 16 Bundesländer, ihre Hauptstädte und 23 große Flüsse Deutschlands.
 //
 // fluesse: Flüsse aus dieser Liste, die durch das Land fließen (werden abgefragt).
 // grenz:   Flüsse, die das Land nur am Rand berühren oder dort entspringen. Sie werden weder
@@ -27,6 +27,7 @@ export const FLUESSE = {
   donau: { name: "Donau", artikel: "die" },
   isar: { name: "Isar", artikel: "die" },
   inn: { name: "Inn", artikel: "der" },
+  saar: { name: "Saar", artikel: "die" },
 };
 
 // reihe: Reihenfolge im Sammelalbum, ungefähr von Norden nach Süden
@@ -68,11 +69,11 @@ export const LAENDER = [
     fluesse: ["elbe", "mulde", "neisse", "spree"], grenz: [],
     fakt: "In Dresden an der Elbe steht die berühmte Frauenkirche." },
   { id: "rp", reihe: 13, name: "Rheinland-Pfalz", hauptstadt: "Mainz", stadt: "mainz", stadtFluss: "rhein",
-    fluesse: ["mosel", "rhein", "lahn"], grenz: [],
+    fluesse: ["mosel", "rhein", "lahn"], grenz: ["saar"],
     fakt: "Mainz und Wiesbaden liegen sich am Rhein direkt gegenüber." },
-  { id: "sl", reihe: 14, name: "Saarland", hauptstadt: "Saarbrücken", stadt: "saarbruecken",
-    fluesse: [], grenz: ["mosel"],
-    fakt: "Das Saarland ist das kleinste Flächenland. Saarbrücken liegt an der Saar." },
+  { id: "sl", reihe: 14, name: "Saarland", artikel: "das", hauptstadt: "Saarbrücken", stadt: "saarbruecken", stadtFluss: "saar",
+    fluesse: ["saar"], grenz: ["mosel"],
+    fakt: "Das Saarland ist das kleinste Flächenland. Es grenzt an Frankreich und Luxemburg." },
   { id: "by", reihe: 15, name: "Bayern", hauptstadt: "München", stadt: "muenchen", stadtFluss: "isar",
     fluesse: ["main", "donau", "isar", "inn"], grenz: ["saale", "rhein"],
     fakt: "Bayern ist das größte Bundesland." },
@@ -111,6 +112,10 @@ export const RAENGE = [
 ];
 
 // "der Rhein" / "die Elbe" – mit großem Anfangsbuchstaben für Satzanfänge
+// Das Saarland ist das einzige Land mit Artikel: "das Saarland", "vom Saarland", "durch das Saarland"
+export const landName = (l, gross = false) => (l.artikel ? `${gross ? "Das" : "das"} ${l.name}` : l.name);
+export const vonLand = (l) => (l.artikel ? `vom ${l.name}` : `von ${l.name}`);
+
 export const mitArtikel = (id, gross = false) => {
   const f = FLUESSE[id];
   const a = gross ? f.artikel[0].toUpperCase() + f.artikel.slice(1) : f.artikel;

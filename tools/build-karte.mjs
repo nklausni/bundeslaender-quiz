@@ -4,7 +4,7 @@
 //   states.geojson          isellsoap/deutschlandGeoJSON, 2_bundeslaender/3_mittel.geo.json
 //   rivers.geojson          Natural Earth ne_10m_rivers_lake_centerlines
 //   rivers_eu.geojson       Natural Earth ne_10m_rivers_europe
-//   osm_rivers.json         Overpass-Export (Havel, Leine, Lahn, Werra, Mulde), © OpenStreetMap
+//   osm_rivers.json         Overpass-Export (Havel, Leine, Lahn, Werra, Mulde, Saar), © OpenStreetMap
 //
 // Aufruf: node build-karte.mjs <quellordner> <ausgabedatei> [anteil]
 import fs from "node:fs";
@@ -58,6 +58,7 @@ const FLUSS_QUELLEN = {
   lahn: { osm: ["Lahn"], box: [7.5, 50.2, 8.9, 51.1] }, werra: { osm: ["Werra"], box: [9.5, 50.3, 11.1, 51.5] },
   mosel: { ne: ["Mosel", "Moselle"] }, main: { ne: ["Main"] }, neckar: { eu: ["Neckar"] },
   donau: { ne: ["Donau", "Danube"] }, isar: { eu: ["Isar"] }, inn: { ne: ["Inn"] },
+  saar: { osm: ["Saar", "La Sarre / Saar"], box: [6.3, 48.5, 7.4, 49.8] }, // an der Grenze zweisprachig benannt
 };
 
 const imBereich = (lon, lat, box = [5.3, 47.0, 15.6, 55.3]) =>
@@ -155,8 +156,8 @@ function abstandGrenze([x, y]) {
   }
   return min;
 }
-// Der Oberrhein ist selbst Grenzfluss zu Frankreich und der Schweiz, deshalb dort ein breiterer Saum.
-const SAUM = { rhein: 7 };
+// Oberrhein und Saar sind stellenweise selbst Grenzfluss zu Frankreich (bzw. der Schweiz), deshalb dort ein breiterer Saum.
+const SAUM = { rhein: 7, saar: 6 };
 const inDeutschland = (p, id) => ringe.some((r) => imRing(p, r)) || abstandGrenze(p) < (SAUM[id] ?? 2.5);
 
 // ---------- Koordinaten normalisieren (linke obere Ecke = Rand)

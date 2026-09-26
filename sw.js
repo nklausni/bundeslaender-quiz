@@ -1,6 +1,6 @@
 // Offline-Cache: Antwort sofort aus dem Cache, im Hintergrund aktualisieren.
 // Bei Änderungen an den Dateien VERSION hochzählen.
-const VERSION = "v6";
+const VERSION = "v7";
 const DATEIEN = [
   "./", "index.html", "manifest.webmanifest", "css/app.css",
   "js/app.js", "js/daten.js", "js/karte.js", "js/karte-daten.js", "js/quiz.js",

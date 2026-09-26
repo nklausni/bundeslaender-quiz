@@ -1,6 +1,6 @@
 # Bundesländer-Quiz
 
-Ein Lernspiel für Kinder: die 16 Bundesländer, ihre Hauptstädte und 22 große Flüsse Deutschlands, immer mit Blick auf die Karte. Frei nutzbar, ohne Anmeldung und ohne Werbung.
+Ein Lernspiel für Kinder: die 16 Bundesländer, ihre Hauptstädte und 23 große Flüsse Deutschlands, immer mit Blick auf die Karte. Frei nutzbar, ohne Anmeldung und ohne Werbung.
 
 Das Quiz ist für das iPhone SE (375 × 667 Punkte) ausgelegt und läuft in jedem aktuellen Browser.
 
@@ -64,7 +64,7 @@ Die Geometrie in `js/karte-daten.js` stammt aus freien Quellen:
 
 - Ländergrenzen: [deutschlandGeoJSON](https://github.com/isellsoap/deutschlandGeoJSON) (`2_bundeslaender/3_mittel.geo.json` → `states.geojson`)
 - Flüsse: [Natural Earth](https://www.naturalearthdata.com/) `ne_10m_rivers_lake_centerlines` → `rivers.geojson` und `ne_10m_rivers_europe` → `rivers_eu.geojson`
-- Havel, Leine, Lahn, Werra, Mulde: © [OpenStreetMap](https://www.openstreetmap.org/copyright)-Mitwirkende (ODbL), Overpass-Export → `osm_rivers.json`
+- Havel, Leine, Lahn, Werra, Mulde, Saar: © [OpenStreetMap](https://www.openstreetmap.org/copyright)-Mitwirkende (ODbL), Overpass-Export → `osm_rivers.json`
 
 Dateien nach `tools/quellen/` legen, dann:
 
@@ -74,8 +74,8 @@ cd tools && npm install && npm run karte
 
 ## Welche Flüsse abgefragt werden
 
-Elbe, Havel, Oder, Ems, Weser, Aller, Leine, Lippe, Saale, Spree, Neiße, Rhein, Fulda, Mulde, Lahn, Werra, Mosel, Main, Neckar, Donau, Isar und Inn.
+Elbe, Havel, Oder, Ems, Weser, Aller, Leine, Lippe, Saale, Spree, Neiße, Rhein, Fulda, Mulde, Lahn, Werra, Mosel, Main, Neckar, Donau, Isar, Inn und Saar.
 
-Pro Land gelten die Flüsse, die wirklich hindurchfließen (`fluesse` in `js/daten.js`). Flüsse, die ein Land nur am Rand berühren oder dort entspringen (`grenz`, etwa die Lahn in Nordrhein-Westfalen), werden weder abgefragt noch als falsche Antwort angeboten. So hat keine Frage zwei richtige Lösungen. Durch das Saarland fließt keiner der 22 Flüsse, Saarbrücken liegt an der Saar.
+Pro Land gelten die Flüsse, die wirklich hindurchfließen (`fluesse` in `js/daten.js`). Flüsse, die ein Land nur am Rand berühren oder dort entspringen (`grenz`, etwa die Lahn in Nordrhein-Westfalen), werden weder abgefragt noch als falsche Antwort angeboten. So hat keine Frage zwei richtige Lösungen.
 
 Schriften: [Grandstander](https://fonts.google.com/specimen/Grandstander) und [Nunito](https://fonts.google.com/specimen/Nunito), beide unter der SIL Open Font License.

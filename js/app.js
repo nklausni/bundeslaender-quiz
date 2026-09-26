@@ -1,4 +1,4 @@
-import { LAENDER, LAND, STIFT, FLUESSE, ANREDEN, mitArtikel } from "./daten.js";
+import { LAENDER, LAND, STIFT, FLUESSE, ANREDEN, mitArtikel, landName } from "./daten.js";
 import { KARTE } from "./karte-daten.js";
 import { karteSvg, skaliere, landBeiTipp, laenderBeiTipp, STADTSTAAT_RINGE, STADT_VON_STADTSTAAT } from "./karte.js";
 import { MISSIONEN, neueRunde, frageNochmal } from "./quiz.js";
@@ -502,7 +502,6 @@ function sammlerEingabe(eingabe, form) {
   const feld = form.querySelector("input");
   const r = pruefeSammler(eingabe, f.land, f.gefunden);
   if (r.art === "leer") return wackle(feld);
-  const land = LAND[f.land].name;
   const name = r.fluss ? FLUESSE[r.fluss].name : "";
   let meldung, art = "schlecht";
   if (r.art === "neu") {
@@ -516,10 +515,10 @@ function sammlerEingabe(eingabe, form) {
     meldung = `${name} hast du schon.`;
     art = "neutral";
   } else if (r.art === "grenz") {
-    meldung = `${mitArtikel(r.fluss, true)} berührt ${land} nur am Rand. Zählt hier nicht.`;
+    meldung = `${mitArtikel(r.fluss, true)} streift ${landName(LAND[f.land])} nur. Zählt hier nicht.`;
     art = "neutral";
   } else if (r.art === "nicht-hier") {
-    meldung = `${mitArtikel(r.fluss, true)} fließt nicht durch ${land}.`;
+    meldung = `${mitArtikel(r.fluss, true)} fließt nicht durch ${landName(LAND[f.land])}.`;
     klang("falsch");
   } else {
     const was = { stadt: "eine Stadt", land: "ein Bundesland" }[r.anderes?.kat];
@@ -546,7 +545,6 @@ function sammlerAbschluss(komplett) {
   runde.beantwortet = true;
   document.activeElement?.blur();
   const f = runde.fragen[runde.i];
-  const land = LAND[f.land].name;
   const fehlend = f.ziel.filter((x) => !f.gefunden.includes(x));
   sp.merkeAntwort(f.fakt, komplett);
   const { plus, bonus, nochmal } = werte(f, komplett, f.wiederholung ? PUNKTE.wiederholung : PUNKTE.alleGefunden);
@@ -557,7 +555,7 @@ function sammlerAbschluss(komplett) {
   app.querySelector("[data-status]").remove();
   const namen = (ids) => liste(ids.map((id) => FLUESSE[id].name));
   const text = komplett
-    ? `Durch ${land} ${f.ziel.length > 1 ? `fließen ${namen(f.ziel)}` : `fließt ${mitArtikel(f.ziel[0])}`}.`
+    ? `Durch ${landName(LAND[f.land])} ${f.ziel.length > 1 ? `fließen ${namen(f.ziel)}` : `fließt ${mitArtikel(f.ziel[0])}`}.`
     : `Es ${fehlend.length > 1 ? "fehlen" : "fehlt"} noch: ${namen(fehlend)}.${nochmal ? " Die Frage kommt gleich noch einmal." : ""}`;
   app.querySelector("[data-unten]").outerHTML = rueckmeldung({
     gut: komplett,
@@ -717,7 +715,7 @@ function zeigeAlbum() {
 function landInfo(l) {
   const flussChips = l.fluesse.length
     ? `<div class="chips">${l.fluesse.map((f) => `<span class="chip">${esc(FLUESSE[f].name)}</span>`).join("")}</div>`
-    : `<div class="leise" style="font-size:15px">Keiner der 22 Flüsse aus dem Quiz</div>`;
+    : `<div class="leise" style="font-size:15px">Keiner der Flüsse aus dem Quiz</div>`;
   return `
     <div class="info-zeile"><span class="icon-kachel ton-lila">${icon("castle", 20)}</span><div><div class="was">Hauptstadt</div>${esc(l.hauptstadt)}</div></div>
     <div class="info-zeile"><span class="icon-kachel ton-blau">${icon("waves", 20)}</span><div><div class="was">Flüsse</div>${flussChips}</div></div>

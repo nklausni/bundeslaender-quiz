@@ -1,5 +1,5 @@
 // Fragen erzeugen: welche Fakten dran sind, welcher Fragetyp, welche falschen Antworten.
-import { LAENDER, LAND, FLUESSE, mitArtikel, laenderMitFluss } from "./daten.js";
+import { LAENDER, LAND, FLUESSE, mitArtikel, laenderMitFluss, landName, vonLand } from "./daten.js";
 import { KARTE } from "./karte-daten.js";
 import { faktStat, MAX_BOX } from "./speicher.js";
 import { STADTSTAAT_RINGE, STADT_VON_STADTSTAAT } from "./karte.js";
@@ -7,7 +7,7 @@ import { STADTSTAAT_RINGE, STADT_VON_STADTSTAAT } from "./karte.js";
 export const MISSIONEN = {
   lage: { titel: "Wo liegt das?", untertitel: "Karte antippen", icon: "pin", ton: "koralle", anzahl: 10 },
   hauptstadt: { titel: "Hauptstädte", untertitel: "16 Städte", icon: "castle", ton: "lila", anzahl: 10 },
-  fluesse: { titel: "Flüsse", untertitel: "22 Flüsse", icon: "waves", ton: "blau", anzahl: 10 },
+  fluesse: { titel: "Flüsse", untertitel: `${Object.keys(FLUESSE).length} Flüsse`, icon: "waves", ton: "blau", anzahl: 10 },
   pruefung: { titel: "Große Prüfung", untertitel: "Alles gemischt", icon: "trophy", ton: "gold", anzahl: 12 },
 };
 
@@ -120,7 +120,7 @@ function lageTippen(id, fakt) {
       return {
         karte: { zustand, texte, ringe: markRing(id) },
         titel: gut ? "Richtig!" : "Fast!",
-        text: gut ? l.fakt : `Du hast ${LAND[gewaehlt].name} angetippt. ${l.name} ist grün markiert.`,
+        text: gut ? l.fakt : `Du hast ${landName(LAND[gewaehlt])} angetippt. ${landName(l, true)} ist grün markiert.`,
       };
     },
   };
@@ -136,7 +136,7 @@ function lageErkennen(id, fakt) {
     optionen: optionen(ids, (x) => LAND[x].name), richtig: id,
     loesung: (gewaehlt) => ({
       karte: { zustand: { [id]: "richtig" }, ringe: markRing(id), texte: [{ ...LABEL[id], text: l.name }] },
-      titel: gewaehlt === id ? "Richtig!" : `Das ist ${l.name}.`,
+      titel: gewaehlt === id ? "Richtig!" : `Das ist ${landName(l)}.`,
       text: l.fakt,
     }),
   };
@@ -152,7 +152,7 @@ function hauptstadt(id, fakt) {
   const ids = [id, ...ablenker(id, LAENDER.map((x) => x.id), (x) => KARTE.staedte[LAND[x].stadt])];
   return {
     typ: "wahl", fakt, icon: "castle", ton: "lila",
-    klein: "Was ist die Hauptstadt von", gross: `${l.name}?`,
+    klein: `Was ist die Hauptstadt ${l.artikel ? "vom" : "von"}`, gross: `${l.name}?`,
     karte: { zustand: { [id]: "mark" }, ringe: markRing(id) },
     optionen: optionen(ids, (x) => LAND[x].hauptstadt), richtig: id,
     loesung: (gewaehlt) => ({
@@ -173,14 +173,14 @@ function hauptstadtRueck(id, fakt) {
     optionen: optionen(ids, (x) => LAND[x].name), richtig: id,
     loesung: (gewaehlt) => ({
       karte: { zustand: { [id]: "richtig" }, staedte: [{ stadt: l.stadt, art: "mark", text: l.hauptstadt }] },
-      titel: gewaehlt === id ? "Richtig!" : `Das ist ${l.name}.`,
-      text: `${l.hauptstadt} ist die Hauptstadt von ${l.name}. ${hauptstadtText(l) === l.fakt ? "" : hauptstadtText(l)}`.trim(),
+      titel: gewaehlt === id ? "Richtig!" : `Das ist ${landName(l)}.`,
+      text: `${l.hauptstadt} ist die Hauptstadt ${vonLand(l)}. ${hauptstadtText(l) === l.fakt ? "" : hauptstadtText(l)}`.trim(),
     }),
   };
 }
 
 export function flussText(fid) {
-  const laender = laenderMitFluss(fid).map((l) => l.name);
+  const laender = laenderMitFluss(fid).map((l) => landName(l));
   const staedte = LAENDER.filter((l) => l.stadtFluss === fid).map((l) => l.hauptstadt);
   let t = `${mitArtikel(fid, true)} fließt durch ${liste(laender)}.`;
   if (staedte.length) t += ` ${liste(staedte)} ${staedte.length > 1 ? "liegen" : "liegt"} ${anDem(fid)}.`;
@@ -213,7 +213,7 @@ function flussDurchLand(id, fakt) {
   const falsche = mischen(Object.keys(FLUESSE).filter((f) => !verboten.has(f))).slice(0, 3);
   return {
     typ: "wahl", fakt, icon: "waves", ton: "blau",
-    klein: "Welcher dieser Flüsse fließt durch", gross: `${l.name}?`,
+    klein: `Welcher dieser Flüsse fließt durch${l.artikel ? ` ${l.artikel}` : ""}`, gross: `${l.name}?`,
     karte: { zustand: { [id]: "mark" }, ringe: markRing(id) },
     optionen: optionen([richtig, ...falsche], (x) => FLUESSE[x].name), richtig,
     loesung: (gewaehlt) => ({
@@ -223,8 +223,8 @@ function flussDurchLand(id, fakt) {
       },
       titel: gewaehlt === richtig ? "Richtig!" : `Es ist ${mitArtikel(richtig)}.`,
       text: l.fluesse.length > 1
-        ? `Durch ${l.name} fließen ${liste(l.fluesse.map((f) => FLUESSE[f].name))}.`
-        : `Durch ${l.name} fließt ${mitArtikel(richtig)}.`,
+        ? `Durch ${landName(l)} fließen ${liste(l.fluesse.map((f) => FLUESSE[f].name))}.`
+        : `Durch ${landName(l)} fließt ${mitArtikel(richtig)}.`,
     }),
   };
 }
@@ -243,7 +243,7 @@ function landZuFluss(fid, fakt) {
         fluesse: [{ id: fid, art: "haupt" }],
         zustand: Object.fromEntries(mitFluss.map((x) => [x, x === richtig ? "richtig" : "leise"])),
       },
-      titel: gewaehlt === richtig ? "Richtig!" : `Richtig wäre ${LAND[richtig].name}.`,
+      titel: gewaehlt === richtig ? "Richtig!" : `Richtig wäre ${landName(LAND[richtig])}.`,
       text: flussText(fid),
     }),
   };
