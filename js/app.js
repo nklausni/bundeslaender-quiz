@@ -522,7 +522,8 @@ function sammlerEingabe(eingabe, form) {
     meldung = `${mitArtikel(r.fluss, true)} fließt nicht durch ${land}.`;
     klang("falsch");
   } else {
-    meldung = r.anderes ? `${r.anderes.name} ist kein Fluss vom Arbeitsblatt.` : "Diesen Fluss kenne ich nicht. Prüf die Schreibweise.";
+    const was = { stadt: "eine Stadt", land: "ein Bundesland" }[r.anderes?.kat];
+    meldung = was ? `${r.anderes.name} ist ${was}, kein Fluss.` : "Diesen Fluss kenne ich nicht. Prüf die Schreibweise.";
   }
   const status = app.querySelector("[data-status]");
   status.textContent = meldung;
@@ -686,7 +687,7 @@ function zeigeAlbum() {
   const s = sp.get();
   const frei = sp.profiFrei(s);
   const punkt = (an) => `<span class="punkt${an ? " an" : ""}"></span>`;
-  const stempel = LAENDER.slice().sort((a, b) => a.nr - b.nr).map((l) => {
+  const stempel = LAENDER.slice().sort((a, b) => a.reihe - b.reihe).map((l) => {
     const voll = s.stempel.includes(l.id);
     const gold = s.goldStempel.includes(l.id);
     const st = sp.landStatus(l);
@@ -716,11 +717,11 @@ function zeigeAlbum() {
 function landInfo(l) {
   const flussChips = l.fluesse.length
     ? `<div class="chips">${l.fluesse.map((f) => `<span class="chip">${esc(FLUESSE[f].name)}</span>`).join("")}</div>`
-    : `<div class="leise" style="font-size:15px">Keiner der Flüsse vom Arbeitsblatt</div>`;
+    : `<div class="leise" style="font-size:15px">Keiner der 22 Flüsse aus dem Quiz</div>`;
   return `
     <div class="info-zeile"><span class="icon-kachel ton-lila">${icon("castle", 20)}</span><div><div class="was">Hauptstadt</div>${esc(l.hauptstadt)}</div></div>
     <div class="info-zeile"><span class="icon-kachel ton-blau">${icon("waves", 20)}</span><div><div class="was">Flüsse</div>${flussChips}</div></div>
-    <p>${esc(l.fakt)} Auf deinem Arbeitsblatt hat das Land die Nummer ${l.nr}.</p>`;
+    <p>${esc(l.fakt)}</p>`;
 }
 
 const infoKarte = (l) => karteSvg({

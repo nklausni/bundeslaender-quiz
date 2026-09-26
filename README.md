@@ -1,6 +1,6 @@
 # Bundesländer-Quiz
 
-Ein Lernspiel für Kinder: die 16 Bundesländer, ihre Hauptstädte und die Flüsse Deutschlands, immer mit Blick auf die Karte. Die Inhalte folgen dem Arbeitsblatt „Deutschland: Bundesländer, Landeshauptstädte und Flüsse“ (Flüsse A bis V).
+Ein Lernspiel für Kinder: die 16 Bundesländer, ihre Hauptstädte und 22 große Flüsse Deutschlands, immer mit Blick auf die Karte. Frei nutzbar, ohne Anmeldung und ohne Werbung.
 
 Das Quiz ist für das iPhone SE (375 × 667 Punkte) ausgelegt und läuft in jedem aktuellen Browser.
 
@@ -72,14 +72,10 @@ Dateien nach `tools/quellen/` legen, dann:
 cd tools && npm install && npm run karte
 ```
 
-## Abweichungen vom ausgefüllten Arbeitsblatt
+## Welche Flüsse abgefragt werden
 
-Das Quiz fragt die Flüsse so ab, wie sie auf der Karte des Arbeitsblatts eingezeichnet sind:
+Elbe, Havel, Oder, Ems, Weser, Aller, Leine, Lippe, Saale, Spree, Neiße, Rhein, Fulda, Mulde, Lahn, Werra, Mosel, Main, Neckar, Donau, Isar und Inn.
 
-- **Niedersachsen:** Weser, Ems, Aller, Leine und Elbe (Aller und Leine fließen laut Karte durch Niedersachsen, die Elbe bildet die Grenze)
-- **Berlin:** Spree und Havel. Die Elbe fließt nicht durch Berlin.
-- **Saarland:** kein Fluss aus der Liste (Saarbrücken liegt an der Saar)
-
-Flüsse, die ein Land nur am Rand berühren (etwa die Lahn in Nordrhein-Westfalen), werden weder abgefragt noch als falsche Antwort angeboten.
+Pro Land gelten die Flüsse, die wirklich hindurchfließen (`fluesse` in `js/daten.js`). Flüsse, die ein Land nur am Rand berühren oder dort entspringen (`grenz`, etwa die Lahn in Nordrhein-Westfalen), werden weder abgefragt noch als falsche Antwort angeboten. So hat keine Frage zwei richtige Lösungen. Durch das Saarland fließt keiner der 22 Flüsse, Saarbrücken liegt an der Saar.
 
 Schriften: [Grandstander](https://fonts.google.com/specimen/Grandstander) und [Nunito](https://fonts.google.com/specimen/Nunito), beide unter der SIL Open Font License.

@@ -184,7 +184,7 @@ export function flussText(fid) {
   const staedte = LAENDER.filter((l) => l.stadtFluss === fid).map((l) => l.hauptstadt);
   let t = `${mitArtikel(fid, true)} fließt durch ${liste(laender)}.`;
   if (staedte.length) t += ` ${liste(staedte)} ${staedte.length > 1 ? "liegen" : "liegt"} ${anDem(fid)}.`;
-  return `${t} Auf deinem Arbeitsblatt ist das Buchstabe ${FLUESSE[fid].buchstabe}.`;
+  return t;
 }
 
 function flussErkennen(fid, fakt) {
